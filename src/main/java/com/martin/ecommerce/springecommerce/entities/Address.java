@@ -1,5 +1,7 @@
 package com.martin.ecommerce.springecommerce.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,6 +25,7 @@ public class Address {
 
 
     //IMPORTANTE: faltaria ver si es que es necesario poner lo de la fetch tipo lazy.
+    @JsonIgnore
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     private LocalUser user;

@@ -1,6 +1,8 @@
 package com.martin.ecommerce.springecommerce.entities;
 
+//import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,16 +28,11 @@ public class WebOrderQuantities {
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
+
+    @JsonIgnore
     @ManyToOne(optional = false)
     @JoinColumn(name = "order_id", nullable = false)
     private WebOrder order;
-
-
-
-
-
-
-
 
     public Long getId() {
         return id;
@@ -60,7 +57,7 @@ public class WebOrderQuantities {
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
-
+    @JsonIgnore
     public WebOrder getWebOrder() {
         return order;
     }
@@ -68,8 +65,4 @@ public class WebOrderQuantities {
     public void setWebOrder(WebOrder order) {
         this.order = order;
     }
-
-    
-
-
 }
