@@ -78,6 +78,7 @@ public class AuthenticationController {
         return user;
     }
 
+    @SuppressWarnings("rawtypes")
     @PostMapping("/verify")
     public ResponseEntity verifyEmail(@RequestParam String token){
         if (userService.verifyUser(token)){

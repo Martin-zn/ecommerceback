@@ -18,6 +18,7 @@ public class OrderService {
 
     //Implemento el metodo que buscara y entregara las ordenes realizadas por un usuario
     public List<WebOrder> getOrders(LocalUser user){
+
         return webOrderRepository.findByUser(user);
     }
 

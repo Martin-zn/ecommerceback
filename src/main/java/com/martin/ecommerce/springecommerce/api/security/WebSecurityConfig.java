@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
 
@@ -24,12 +25,13 @@ public class WebSecurityConfig {
         //esto porque la versio simplificada esta deprecated, genero el objeto authz quien sera la cadena encargada de contener las autoizaciones
         //Agrego un filtro previo, para validar si es que la request http viene con el token JWT
         http.addFilterBefore(jwtRequestFilter, AuthorizationFilter.class);
-
         http.authorizeHttpRequests((authz) -> authz
-        .requestMatchers(HttpMethod.GET,"/product").permitAll()
-        .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login","/auth/verify").permitAll()
+            //    .anyRequest().permitAll()) //Esto es para probar
+//        .requestMatchers(HttpMethod.GET,"/product","/product/**").permitAll()
+//        .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login","/auth/verify", "/error").permitAll()
+        .requestMatchers("/product", "/auth/register", "/auth/login","/auth/verify", "/error").permitAll()
         .anyRequest().authenticated())
-        .csrf(config -> config.disable());
+        .csrf(AbstractHttpConfigurer::disable);
         //Entiendo que esta coniguracion se utiliza para evitar el crosed side scripting
 
         return http.build();

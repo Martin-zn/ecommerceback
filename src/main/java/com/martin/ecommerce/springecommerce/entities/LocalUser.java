@@ -40,9 +40,10 @@ public class LocalUser {
 
     //IMPORTANTE: ver si es que es importante o necesario el fetch aca
     @JsonIgnore
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY  )
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Address> addresses = new ArrayList<>();
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("id desc")
     private List<VerificationToken> verificationTokens = new ArrayList<>();
@@ -114,6 +115,7 @@ public class LocalUser {
         this.password = password;
     }
 
+    @JsonIgnore
     public List<Address> getAddresses() {
         return addresses;
     }
@@ -122,6 +124,7 @@ public class LocalUser {
         this.addresses = addresses;
     }
 
+    @JsonIgnore
     public List<VerificationToken> getVerificationTokens() {
         return verificationTokens;
     }
