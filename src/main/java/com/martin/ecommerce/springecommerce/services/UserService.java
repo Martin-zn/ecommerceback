@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
+import com.martin.ecommerce.springecommerce.api.model.PasswordResetBody;
+import com.martin.ecommerce.springecommerce.exceptions.EmailNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -125,5 +127,30 @@ public class UserService{
         }
         return false;
     }
+
+    public void forgotPassword(String email) throws EmailFailureException, EmailNotFoundException {
+        Optional<LocalUser> opUser = userRepository.findByEmailIgnoreCase(email);
+        if(opUser.isPresent()){
+            LocalUser user = opUser.get();
+            String token = jwtService.generatePasswordResetJWT(user);
+            emailService.sendPasswordResetEmail(user, token);
+        }else{
+            throw new EmailNotFoundException();
+        }
+    }
+        //Metodo para resetear la contraseña de un usuario
+    public void resetPassword(PasswordResetBody body){
+        //Con la funcion llamada del jwt service, extraemos el email del token
+        String email = jwtService.getResetPasswordEmail(body.getToken());
+
+        Optional<LocalUser> opUser = userRepository.findByEmailIgnoreCase(email);
+        if (opUser.isPresent()){
+            LocalUser user = opUser.get();
+            user.setPassword(encryptionService.encryptPassword(body.getPassword()));
+            userRepository.save(user);
+        }
+
+    }
+
 
 }

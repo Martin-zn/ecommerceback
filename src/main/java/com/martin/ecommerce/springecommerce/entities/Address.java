@@ -63,5 +63,11 @@ public class Address {
         this.country = country;
     }
 
-    
+    public LocalUser getUser() {
+        return user;
+    }
+
+    public void setUser(LocalUser user) {
+        this.user = user;
+    }
 }

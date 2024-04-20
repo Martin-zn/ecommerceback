@@ -1,7 +1,9 @@
 package com.martin.ecommerce.springecommerce.services;
 
+import com.martin.ecommerce.springecommerce.entities.LocalUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cglib.core.Local;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -42,4 +44,17 @@ public class EmailService {
         }
     }
 
+    public void sendPasswordResetEmail(LocalUser user, String token) throws EmailFailureException{
+        SimpleMailMessage message = makeMailMessage();
+
+        message.setTo(user.getEmail());
+        message.setSubject(("Verificacion de Cambio de contraseña"));
+        message.setText("Entra al link para cambiar tu contraseña \n" + url +"/auth/reset?token="+token);
+
+        try{
+            javaMailSender.send(message);
+        }catch(MailException ex){
+                throw new EmailFailureException();
+        }
+    }
 }
