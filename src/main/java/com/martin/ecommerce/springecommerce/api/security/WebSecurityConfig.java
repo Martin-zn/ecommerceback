@@ -30,7 +30,7 @@ public class WebSecurityConfig {
 //        .requestMatchers(HttpMethod.GET,"/product","/product/**").permitAll()
 //        .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login","/auth/verify", "/error").permitAll()
         .requestMatchers("/product", "/auth/register", "/auth/login","/auth/verify", "/error",
-                "/auth/forgot", "/auth/reset").permitAll()
+                "/auth/forgot", "/auth/reset", "/websocket", "/websocket/**").permitAll()
         .anyRequest().authenticated())
         .csrf(AbstractHttpConfigurer::disable);
         //Entiendo que esta coniguracion se utiliza para evitar el crosed side scripting
