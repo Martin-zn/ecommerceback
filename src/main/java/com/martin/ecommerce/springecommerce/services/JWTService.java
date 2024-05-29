@@ -1,18 +1,22 @@
 package com.martin.ecommerce.springecommerce.services;
 
 import java.util.Date;
+import java.util.function.Function;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.martin.ecommerce.springecommerce.entities.LocalUser;
 
-import jakarta.annotation.PostConstruct;
+import javax.crypto.SecretKey;
 
 @Service
+@Slf4j
 public class JWTService {
 
     @Value("${jwt.algorithm.key}")
@@ -22,62 +26,89 @@ public class JWTService {
     @Value("${jwt.expiryInSeconds}")
     private int expiryInSeconds;
 
-    private Algorithm algorithm;
-
     private static final String USERNAME_KEY = "USERNAME";
     private static final String VERIFICATION_EMAIL_KEY = "VERIFICATION_EMAIL";
     private static final String RESET_PASSWORD_EMAIL_KEY = "RESET_PASSWORD_EMAIL";
 
-
-    //Genero el JWT definiendo primero el algoritmo que utilizare para encriptarlo
-    @PostConstruct
-    public void PostConstruct(){
-        algorithm = Algorithm.HMAC256(algorithmKey);
-    }
-
-    //Segundo genero un metodo, el cual utilizara el username sel usuario para crear el JWT, defino el claim, el tiempo de duracion, el creador y por ultimmo el algoritmo
+    //Metodo para generar Token
     public String generateJWT(LocalUser user){
-        return JWT.create()
-        .withClaim(USERNAME_KEY, user.getUsername())
-        .withExpiresAt(new Date(System.currentTimeMillis() + (1000*expiryInSeconds)))
-        .withIssuer(issuer)
-        .sign(algorithm);
+        return Jwts.builder()
+                .subject(user.getUsername())
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + Long.parseLong(String.valueOf(1000*expiryInSeconds))))
+                .issuer(issuer)
+                .signWith(getSignatureKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+    //Obtener la firma del token Encriptado
+    public SecretKey getSignatureKey(){
+        return Keys.hmacShaKeyFor(algorithmKey.getBytes());
     }
 
-    //Genero un metodo encargado de decodificar un JWT, este resive un JWT y sabiendo cual es el claim desencripta el codigo
+    //Validacion de token
+    public boolean isTokenValid(String token){
+        try{
+            Jwts.parser()
+                    .verifyWith(getSignatureKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+            return true;
+        }catch (Exception e){
+            log.error("Token invalido, error: ".concat(e.getMessage()));
+            return false;
+        }
+    }
+    //Extraccion de todos los  Claims
+    public Claims extractClaims(String token){
+        return Jwts.parser()
+                .verifyWith(getSignatureKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
+
+    //Obtener un Claim
+    public <T> T getClaim(String token, Function<Claims, T> claimsTFunction){
+        Claims claims = extractClaims(token);
+        return claimsTFunction.apply(claims);
+    }
+
+
+
     public String getUsername(String token){
-        DecodedJWT jwt = JWT.require(algorithm).withIssuer(issuer).build().verify(token);
-        return JWT.decode(token).getClaim(USERNAME_KEY).asString();
+        return getClaim(token, Claims::getSubject);
     }
 
-    //VERIFICACION CON EMAIL
-    //Genero un metodo que genere un JWT, con el claim email_key, esto para generar una validacion por correo( por lo mismo de agrego springbot- email en el pom)
+    //--------------------------------------------------------------------VERIFICACION CON EMAIL--------------------------------------------------------------------//
+    //Genero un metodo que genere un JWT, con el claim email_key
     public String generateVerificationJWT(LocalUser user){
-        //Este metodo es muy parecido al principal para crear el JWT
-        return JWT.create()
-        .withClaim(VERIFICATION_EMAIL_KEY, user.getEmail())
-        .withExpiresAt(new Date(System.currentTimeMillis() + (1000*expiryInSeconds)))
-        .withIssuer(issuer)
-        .sign(algorithm);
+        return Jwts.builder()
+                .claim(VERIFICATION_EMAIL_KEY, user.getEmail())
+                .expiration(new Date(System.currentTimeMillis() + Long.parseLong(String.valueOf(1000*expiryInSeconds))))
+                .issuer(issuer)
+                .signWith(getSignatureKey(), SignatureAlgorithm.HS256)
+                .compact();
     }
 
-    //Funcion para resetear la contraseña
-    //Copiamos el metodo anterior
+    //Creo un Token para el reseteo de la clave
     public String generatePasswordResetJWT(LocalUser user){
-        return JWT.create()
-                //Creo un JWT, con el claim correspondiente y con el correo correspondente
-                .withClaim(RESET_PASSWORD_EMAIL_KEY, user.getEmail())
-                //Hardcodeo la duracion para hacerlo mas rapido, seran 30 min
-                .withExpiresAt(new Date(System.currentTimeMillis() + (1000*60*30)))
-                //Defino el issuer y la sign
-                .withIssuer(issuer)
-                .sign(algorithm);
+        return Jwts.builder()
+                        .claim(RESET_PASSWORD_EMAIL_KEY, user.getEmail())
+                        .expiration(new Date(System.currentTimeMillis() + (1000*60*30)))
+                        .issuer(issuer)
+                        .signWith(getSignatureKey(), SignatureAlgorithm.HS256)
+                        .compact();
+
     }
 
     //MEtodo para extraer el correo del token
     public String getResetPasswordEmail(String token){
-        DecodedJWT jwt = JWT.require(algorithm).withIssuer(issuer).build().verify(token);
-        return JWT.decode(token).getClaim(RESET_PASSWORD_EMAIL_KEY).asString();
+
+        return getClaim(token, claims -> claims.get(RESET_PASSWORD_EMAIL_KEY, String.class));
+        //Borrar si funciona
+//        DecodedJWT jwt = JWT.require(algorithm).withIssuer(issuer).build().verify(token);
+//        return JWT.decode(token).getClaim(RESET_PASSWORD_EMAIL_KEY).asString();
     }
 
 }

@@ -3,10 +3,15 @@ package com.martin.ecommerce.springecommerce.services;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.martin.ecommerce.springecommerce.api.model.PasswordResetBody;
+import com.martin.ecommerce.springecommerce.entities.RoleEntity;
+import com.martin.ecommerce.springecommerce.entities.RoleEnum;
 import com.martin.ecommerce.springecommerce.exceptions.EmailNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.martin.ecommerce.springecommerce.api.model.LoginBody;
@@ -41,6 +46,9 @@ public class UserService{
     @Autowired
     private VerificationTokenRepository verificationTokenRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     //Metodo para registrar un usuario
     public LocalUser registerUser(RegistrationBody registrationBody) throws UserAlreadyExistsException, EmailFailureException{
@@ -49,21 +57,30 @@ public class UserService{
         if (userRepository.findByEmailIgnoreCase(registrationBody.getEmail()).isPresent() || userRepository.findByUsernameIgnoreCase(registrationBody.getUsername()).isPresent()){
             throw new UserAlreadyExistsException();
         }
-        //Construyo un user
-        LocalUser user = new LocalUser();
-        //Agrego sus atributos
+
+        LocalUser user = new LocalUser();//Creo un user vacio
+
         user.setEmail(registrationBody.getEmail());
         user.setName(registrationBody.getFirstName());
         user.setLastname(registrationBody.getLastName());
         user.setUsername(registrationBody.getUsername());
-        //Encripto la contraseña antes de guardarla
-        user.setPassword(encryptionService.encryptPassword(registrationBody.getPassword()));
-        //Con el metodo de abajo creo el token de verificacion
-        VerificationToken verificationToken = createVerificationToken(user);
-        //Con los metodos creados en el emailservice, envio el correo
-        emailService.sendVerificationEmail(verificationToken);
+//        user.setPassword(encryptionService.encryptPassword(registrationBody.getPassword()));//Encripto la contraseña antes de guardarla
+        String encryptedPassword = passwordEncoder.encode(registrationBody.getPassword());
+        user.setPassword(encryptedPassword);
 
-        return userRepository.save(user);
+        Set<RoleEntity> roles = registrationBody.getRoles().stream()//creo un set de roles, esto se hace ya que vienen modo string y lo transformo a la entidad Role
+                .map(role -> RoleEntity.builder()
+                        .name(RoleEnum.valueOf(role))
+                        .build())
+                .collect(Collectors.toSet());
+
+        user.setRoles(roles);
+
+        VerificationToken verificationToken = createVerificationToken(user);//Creo un token de verificacion
+
+        emailService.sendVerificationEmail(verificationToken);//Envio el Token via correo
+
+        return userRepository.save(user);//Guardo el user
     }
 
     //Creare un objeto Verification token

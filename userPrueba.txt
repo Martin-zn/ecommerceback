@@ -1,0 +1,39 @@
+{
+    "username": "jorge",
+    "password": "Jorge1",
+    "email": "jorge@jorge.com",
+    "firstName":"jorge",
+    "lastName":"Zuñiga",
+    "roles":["ADMIN"],
+    "jwt": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqb3JnZSIsImlhdCI6MTcxNjk5NDQwOSwiZXhwIjoxNzE3NTk5MjA5LCJpc3MiOiJlQ29tbWVyY2UifQ.SiBvGx4wajRx3B3K6ZKI4-dDo9DgV6NT6JZXC6VbhxU"
+}
+
+{
+    "username": "solange",
+    "password": "Solange1",
+    "email": "solange@solange.com",
+    "firstName":"solange",
+    "lastName":"Nuñez",
+    "roles":["INVITED"],
+    "jwt": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzb2xhbmdlIiwiaWF0IjoxNzE2OTk0NDM2LCJleHAiOjE3MTc1OTkyMzYsImlzcyI6ImVDb21tZXJjZSJ9.1WgAb-YYyatWBPpLdawjuCkHflz545ErfqIApfWFeyI
+}
+
+{
+    "username": "tomas",
+    "password": "Tomas1",
+    "email": "tomas@stomas.com",
+    "firstName":"tomase",
+    "lastName":"Zuñiga",
+    "roles":["USER"],
+    "jwt": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0b21hcyIsImlhdCI6MTcxNjk5NDMzNCwiZXhwIjoxNzE3NTk5MTM0LCJpc3MiOiJlQ29tbWVyY2UifQ.W-FIlYLn9oJVKJMPiQAYmumVqDM1fnRqCXEJrf2ljXo"
+}
+
+{
+    "username": "martin",
+    "password": "Martin1",
+    "email": "martin@martin.com",
+    "firstName":"martine",
+    "lastName":"Zuñiga",
+    "roles":["ADMIN", "USER", "INVITED"],
+    "jwt": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJ0aW4iLCJpYXQiOjE3MTY5OTQ0NTgsImV4cCI6MTcxNzU5OTI1OCwiaXNzIjoiZUNvbW1lcmNlIn0.R8Nm-ofFnCci67WMgrufQ8Yn4LrubwqhuJF8LAJpsKQ"
+}

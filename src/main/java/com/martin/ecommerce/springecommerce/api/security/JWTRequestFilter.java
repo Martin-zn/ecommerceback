@@ -18,7 +18,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.auth0.jwt.exceptions.JWTDecodeException;
+//import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.martin.ecommerce.springecommerce.entities.LocalUser;
 import com.martin.ecommerce.springecommerce.repositories.UserRepository;
 import com.martin.ecommerce.springecommerce.services.JWTService;
@@ -62,7 +62,7 @@ public class JWTRequestFilter extends OncePerRequestFilter implements ChannelInt
                         return authentication;
                     }
                 }
-            } catch (JWTDecodeException ex){
+            } catch (Exception e){
 
             }
         }
