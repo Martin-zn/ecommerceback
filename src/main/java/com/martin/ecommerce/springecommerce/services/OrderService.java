@@ -12,14 +12,27 @@ import com.martin.ecommerce.springecommerce.repositories.WebOrderRepository;
 @Service
 public class OrderService {
 
-    //Inyecto las dependencias de el repositorio de las ordenes
+    //Inyeccion
+
     @Autowired
     private WebOrderRepository webOrderRepository;
 
-    //Implemento el metodo que buscara y entregara las ordenes realizadas por un usuario
-    public List<WebOrder> getOrders(LocalUser user){
+    //Metodos
 
+    public List<WebOrder> getOrders(LocalUser user){
         return webOrderRepository.findByUser(user);
     }
+
+    public WebOrder createWebOreder(){
+
+        return null;
+    }
+
+
+
+
+
+
+
 
 }

@@ -37,3 +37,12 @@
     "roles":["ADMIN", "USER", "INVITED"],
     "jwt": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJ0aW4iLCJpYXQiOjE3MTY5OTQ0NTgsImV4cCI6MTcxNzU5OTI1OCwiaXNzIjoiZUNvbW1lcmNlIn0.R8Nm-ofFnCci67WMgrufQ8Yn4LrubwqhuJF8LAJpsKQ"
 }
+
+{
+    "username": "tamara",
+    "password": "Tamara1",
+    "email": "tamara@tamara.com",
+    "firstName":"Tamara",
+    "lastName":"Zuñiga",
+    "roles":["ADMIN", "USER", "INVITED"],	"jwt":"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0YW1hcmEiLCJpYXQiOjE3MTgwMzM5MTIsImV4cCI6MTcxODYzODcxMiwiaXNzIjoiZUNvbW1lcmNlIn0.dUfFDDqaoT-GMnjMLWWJu8dN2FyAK1vAXtoh1IUe2f0"
+}

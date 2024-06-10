@@ -64,7 +64,7 @@ public class WebSecurityConfig {
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
             });
 
-            return http.build();
+            return http.build();//Armo el HttpSecurity
         }
 
         @Bean

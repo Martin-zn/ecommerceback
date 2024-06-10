@@ -38,11 +38,13 @@ public class AuthenticationController {
     public ResponseEntity registerUser(@Valid @RequestBody RegistrationBody registrationBody){
         try {
             userService.registerUser(registrationBody);
-            System.out.println("Exito");
+            System.out.println("Usuario Creado");
             return ResponseEntity.ok().build();
         } catch (UserAlreadyExistsException e) {
+            System.out.println("Problemas con la creacion del usuario");
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         } catch (EmailFailureException e) {
+            System.out.println("Problemas con la verifiacion por correo");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

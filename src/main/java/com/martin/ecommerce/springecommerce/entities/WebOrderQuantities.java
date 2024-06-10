@@ -28,6 +28,8 @@ public class WebOrderQuantities {
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
+    private Integer price;
+
 
     @JsonIgnore
     @ManyToOne(optional = false)
@@ -64,5 +66,13 @@ public class WebOrderQuantities {
 
     public void setWebOrder(WebOrder order) {
         this.order = order;
+    }
+
+    public Integer getPrice() {
+        return price;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
     }
 }

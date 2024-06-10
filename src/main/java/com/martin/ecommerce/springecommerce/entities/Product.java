@@ -1,12 +1,6 @@
 package com.martin.ecommerce.springecommerce.entities;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "products")
@@ -17,12 +11,20 @@ public class Product {
     private Long id;
 
     private String name;
+    private String brand;
     private String shortDescription;
     private String longDescription;
     private Integer price;
-    
+    private String imageUrl;
+    private Integer quantity;
+
+
     @OneToOne(mappedBy = "product", cascade = CascadeType.REMOVE, optional = false, orphanRemoval = true )
     private Inventory inventory;
+
+    @ManyToOne()
+    @JoinColumn(name = "category_id")
+    private Category category;
 
 
 
@@ -32,6 +34,13 @@ public class Product {
     }
     public void setId(Long id) {
         this.id = id;
+    }
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
     public String getName() {
         return name;
@@ -58,6 +67,27 @@ public class Product {
         this.price = price;
     }
 
-    
+    public String getImageUrl() {
+        return imageUrl;
+    }
 
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
 }

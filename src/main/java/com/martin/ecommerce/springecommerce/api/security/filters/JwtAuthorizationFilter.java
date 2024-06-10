@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -35,14 +36,19 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         if(tokenHeader != null && tokenHeader.startsWith("Bearer ")){
             String token = tokenHeader.substring(7);
 
-            if (jwtService.isTokenValid(token)){
-                String username = jwtService.getUsername(token);
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            try {
 
-                UsernamePasswordAuthenticationToken authenticationToken =
-                        new UsernamePasswordAuthenticationToken(username, null, userDetails.getAuthorities());
+                if (jwtService.isTokenValid(token)) {
+                    String username = jwtService.getUsername(token);
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                    UsernamePasswordAuthenticationToken authenticationToken =
+                            new UsernamePasswordAuthenticationToken(username, null, userDetails.getAuthorities());
+
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                }
+            } catch (Exception e){
+                throw new BadCredentialsException("Invalid Token ... From JwtAuthorizationFilter");
             }
         }
         filterChain.doFilter(request, response);

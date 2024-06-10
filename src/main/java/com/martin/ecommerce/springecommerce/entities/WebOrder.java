@@ -32,6 +32,8 @@ public class WebOrder {
     @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<WebOrderQuantities> quantities = new ArrayList<>();
 
+    private Integer totalPrice;
+
     public Long getId() {
         return id;
     }
@@ -64,6 +66,11 @@ public class WebOrder {
         this.quantities = quantities;
     }
 
-    
+    public Integer getTotalPrice() {
+        return totalPrice;
+    }
 
+    public void setTotalPrice(Integer totalPrice) {
+        this.totalPrice = totalPrice;
+    }
 }
