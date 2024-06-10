@@ -11,6 +11,7 @@ import com.martin.ecommerce.springecommerce.entities.RoleEntity;
 import com.martin.ecommerce.springecommerce.entities.RoleEnum;
 import com.martin.ecommerce.springecommerce.exceptions.EmailNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -51,6 +52,11 @@ public class UserService{
 
 
     //Metodo para registrar un usuario
+
+    public LocalUser findUserById(Long id){
+        return userRepository.findById(id).get();
+    }
+
     public LocalUser registerUser(RegistrationBody registrationBody) throws UserAlreadyExistsException, EmailFailureException{
 
         //primero verifico si es que el correo o el nombre de usuario esta registrado, de ser asi no podra registrarse

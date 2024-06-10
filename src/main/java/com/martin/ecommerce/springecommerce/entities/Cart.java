@@ -28,6 +28,9 @@ public class Cart {
     private Set<CartItem> cartItems = new HashSet<>();
 
     @Column(name = "total_item")
+    private double totalItem;
+
+    @Column(name = "total_price")
     private double totalPrice;
 
 

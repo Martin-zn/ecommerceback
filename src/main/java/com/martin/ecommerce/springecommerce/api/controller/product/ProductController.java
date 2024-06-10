@@ -2,11 +2,10 @@ package com.martin.ecommerce.springecommerce.api.controller.product;
 
 import java.util.List;
 
+import com.martin.ecommerce.springecommerce.exceptions.ProductException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import com.martin.ecommerce.springecommerce.entities.Product;
 import com.martin.ecommerce.springecommerce.services.ProductService;
@@ -22,5 +21,11 @@ public class ProductController {
     @CrossOrigin("http://localhost:3000")
     public List<Product> getProducts(){
         return productService.getProducts();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getProductById(@PathVariable Long id) throws ProductException {
+
+        return ResponseEntity.ok(productService.findProductById(id));
     }
 }
