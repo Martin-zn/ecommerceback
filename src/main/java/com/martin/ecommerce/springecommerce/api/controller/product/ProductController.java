@@ -2,8 +2,12 @@ package com.martin.ecommerce.springecommerce.api.controller.product;
 
 import java.util.List;
 
+import com.martin.ecommerce.springecommerce.api.model.CreateProductBody;
 import com.martin.ecommerce.springecommerce.exceptions.ProductException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,4 +32,25 @@ public class ProductController {
 
         return ResponseEntity.ok(productService.findProductById(id));
     }
+
+    @PostMapping("/admin/createProduct")
+    public ResponseEntity<?> createProduct(@RequestBody CreateProductBody productBody){
+        productService.createProduct(productBody);
+        return ResponseEntity.ok("Producto Creado exitosamente");
+    }
+
+    @GetMapping("/pageProducts")
+    public ResponseEntity<Page<Product>> getPageProducts(@RequestParam String category, @RequestParam Integer minPrice, @RequestParam Integer maxprice,
+                                                         @RequestParam String sort, @RequestParam Integer pageNumber, @RequestParam Integer pageSize){
+
+        Page<Product> res = productService.getAllProductPage(category, minPrice, maxprice, sort, pageNumber, pageSize);
+
+        System.out.println("Esta es la pagina de productos");
+
+        return new ResponseEntity<>(res, HttpStatus.ACCEPTED);
+
+    }
+
+
+
 }

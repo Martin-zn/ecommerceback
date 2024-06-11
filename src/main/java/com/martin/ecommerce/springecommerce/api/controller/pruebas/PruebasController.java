@@ -1,9 +1,11 @@
 package com.martin.ecommerce.springecommerce.api.controller.pruebas;
 
 
+import com.martin.ecommerce.springecommerce.api.model.CreateProductBody;
 import com.martin.ecommerce.springecommerce.api.model.RegistrationBody;
 import com.martin.ecommerce.springecommerce.exceptions.EmailFailureException;
 import com.martin.ecommerce.springecommerce.exceptions.UserAlreadyExistsException;
+import com.martin.ecommerce.springecommerce.services.ProductService;
 import com.martin.ecommerce.springecommerce.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ public class PruebasController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ProductService productService;
 
 
     @GetMapping("/hello")
@@ -49,6 +54,14 @@ public class PruebasController {
     //@PreAuthorize("hasRole('INVITED')")
     public String helloInvited(){
         return "Hello Invited";
+    }
+
+
+
+    @PostMapping("/admin/createProduct")
+    public ResponseEntity<?> createProduct(@RequestBody CreateProductBody productBody){
+        productService.createProduct(productBody);
+        return ResponseEntity.ok("Producto Creado exitosamente");
     }
 
 

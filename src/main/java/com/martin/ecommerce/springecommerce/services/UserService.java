@@ -7,9 +7,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.martin.ecommerce.springecommerce.api.model.PasswordResetBody;
-import com.martin.ecommerce.springecommerce.entities.RoleEntity;
-import com.martin.ecommerce.springecommerce.entities.RoleEnum;
+import com.martin.ecommerce.springecommerce.entities.*;
 import com.martin.ecommerce.springecommerce.exceptions.EmailNotFoundException;
+import com.martin.ecommerce.springecommerce.repositories.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,8 +17,6 @@ import org.springframework.stereotype.Service;
 
 import com.martin.ecommerce.springecommerce.api.model.LoginBody;
 import com.martin.ecommerce.springecommerce.api.model.RegistrationBody;
-import com.martin.ecommerce.springecommerce.entities.LocalUser;
-import com.martin.ecommerce.springecommerce.entities.VerificationToken;
 import com.martin.ecommerce.springecommerce.exceptions.EmailFailureException;
 import com.martin.ecommerce.springecommerce.exceptions.UserAlreadyExistsException;
 import com.martin.ecommerce.springecommerce.exceptions.UserNotVerifiedException;
@@ -50,6 +48,8 @@ public class UserService{
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private CartRepository cartRepository;
 
     //Metodo para registrar un usuario
 
@@ -85,8 +85,9 @@ public class UserService{
         VerificationToken verificationToken = createVerificationToken(user);//Creo un token de verificacion
 
         emailService.sendVerificationEmail(verificationToken);//Envio el Token via correo
-
+        createCart(user);
         return userRepository.save(user);//Guardo el user
+
     }
 
     //Creare un objeto Verification token
@@ -177,6 +178,22 @@ public class UserService{
 
     public boolean userHasPermissionToUser(LocalUser user, Long id){
         return user.getId() == id;
+    }
+
+
+    private Cart createCart(LocalUser user){
+        Cart cart = new Cart();
+        cart.setUser(user);
+
+        return cartRepository.save(cart);
+    }
+
+    public LocalUser findUserByJwt(String jwt){
+        String username = jwtService.getUsername(jwt);
+        LocalUser user = userRepository.findByUsernameIgnoreCase(username).get();
+
+        return user;
+
     }
 
 

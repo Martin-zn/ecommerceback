@@ -56,21 +56,25 @@ public class ProductService {
         try{
             Product product = new Product();
 
-            Category category = categoryRepository.findByNameIgnoreCase(productBody.getCategory()).get();
+            Category category = categoryRepository.findByNameIgnoreCase(productBody.getCategory()).orElse(null);
+
+
             if(category == null){
                 Category newCategory = new Category();
                 newCategory.setName(productBody.getCategory());
                 categoryRepository.save(newCategory);
             }
 
+            product.setCategory(category);
             product.setName(productBody.getName());
             product.setBrand(productBody.getBrand());
-            product.setCategory(category);
             product.setImageUrl(productBody.getImageUrl());
             product.setLongDescription(productBody.getLongDescription());
             product.setShortDescription(productBody.getShortDescription());
             product.setPrice(productBody.getPrice());
             product.setQuantity(productBody.getQuantity());
+
+            productsRepository.save(product);
 
         }catch (Exception e){
             System.out.println("No funciono papito... revisa el error - " + e);
@@ -103,23 +107,33 @@ public class ProductService {
 
         return productsRepository.save(upgradeProduct);
     }
-    public Page<Product> getAllProductPage(String category, Integer minPrice, Integer maxPrice, String sort,
-    Integer pageNumber, Integer pageSize){
+//    public Page<Product> getAllProductPage(String category, Integer minPrice, Integer maxPrice, String sort,
+//    Integer pageNumber, Integer pageSize){
+//
+//        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+//
+//        List<Product> products = productsRepository.filterProducts(category, minPrice, maxPrice, sort);
+//
+//        int starIndex=(int) pageable.getOffset();
+//        int endIndex = Math.min(starIndex + pageable.getPageSize(), products.size());
+//
+//        List<Product> pageContent = products.subList(starIndex, endIndex);
+//
+//        Page<Product> filterProducts = new PageImpl<>(pageContent, pageable, products.size());
+//
+//
+//        return null;
+//    }
+public Page<Product> getAllProductPage(String category, Integer minPrice, Integer maxPrice, String sort, Integer pageNumber, Integer pageSize) {
+    Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+    List<Product> products = productsRepository.filterProducts(category, minPrice, maxPrice, sort);
+    int start = (int) pageable.getOffset();
+    int end = (int) ((start + pageable.getPageSize()) > products.size() ? products.size() : (start + pageable.getPageSize()));
+    Page<Product> productPage = new PageImpl<>(products.subList(start, end), pageable, products.size());
 
-        List<Product> products = productsRepository.filterProducts(category, minPrice, maxPrice, sort);
-
-        int starIndex=(int) pageable.getOffset();
-        int endIndex = Math.min(starIndex + pageable.getPageSize(), products.size());
-
-        List<Product> pageContent = products.subList(starIndex, endIndex);
-
-        Page<Product> filterProducts = new PageImpl<>(pageContent, pageable, products.size());
-
-
-        return null;
-    }
+    return productPage;
+}
 
 
 }

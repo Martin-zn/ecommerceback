@@ -1,7 +1,9 @@
 package com.martin.ecommerce.springecommerce.api.controller.auth;
 
 import com.martin.ecommerce.springecommerce.api.model.PasswordResetBody;
+import com.martin.ecommerce.springecommerce.entities.Cart;
 import com.martin.ecommerce.springecommerce.exceptions.EmailNotFoundException;
+import com.martin.ecommerce.springecommerce.services.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +34,9 @@ public class AuthenticationController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CartService cartService;
 
     @SuppressWarnings("rawtypes")
     @PostMapping("/register")
@@ -72,6 +77,7 @@ public class AuthenticationController {
             LoginResponse response = new LoginResponse();
             response.setJwt(jwt);
             response.setSuccess(true);
+
             return ResponseEntity.ok(response);
 
         }

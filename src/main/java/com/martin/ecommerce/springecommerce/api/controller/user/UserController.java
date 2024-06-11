@@ -2,8 +2,10 @@ package com.martin.ecommerce.springecommerce.api.controller.user;
 
 import com.martin.ecommerce.springecommerce.api.model.DataChange;
 import com.martin.ecommerce.springecommerce.entities.Address;
+import com.martin.ecommerce.springecommerce.entities.Cart;
 import com.martin.ecommerce.springecommerce.entities.LocalUser;
 import com.martin.ecommerce.springecommerce.repositories.AddressRepository;
+import com.martin.ecommerce.springecommerce.services.CartService;
 import com.martin.ecommerce.springecommerce.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CartService cartService;
 
 @GetMapping("/{userId}/address")
     public ResponseEntity<List<Address>> getAddress(@AuthenticationPrincipal LocalUser user, @PathVariable Long userId){
@@ -75,6 +80,20 @@ public class UserController {
         }
         return ResponseEntity.badRequest().build();
     }
+
+//    @GetMapping("/cart")
+//    public ResponseEntity<Cart> findUserCart(@RequestHeader("Authorization") String jwt){
+//
+//    }
+
+    @GetMapping("/cart")
+    public ResponseEntity<Cart> findUserCart(@AuthenticationPrincipal LocalUser user){
+    Cart cart = cartService.findUserCart(user.getId());
+
+    return new ResponseEntity<Cart>(cart, HttpStatus.OK);
+
+    }
+
 
 
 }

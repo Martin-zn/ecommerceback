@@ -56,7 +56,7 @@ public class WebSecurityConfig {
             http.authorizeHttpRequests((authz) -> authz
                             .requestMatchers("/product","/product/**", "/auth/register", "/auth/login","/auth/verify", "/error",
                                     "/auth/forgot", "/auth/reset", "/websocket", "/websocket/**", "/prueba/hello", "/login").permitAll()
-                            .requestMatchers("/prueba/admin").hasRole("ADMIN")
+                            .requestMatchers("/prueba/admin", "/prueba/admin/createProduct").hasRole("ADMIN")
                             .requestMatchers("/prueba/user").hasRole("USER")
                             .anyRequest().authenticated())
                             .csrf(AbstractHttpConfigurer::disable);
