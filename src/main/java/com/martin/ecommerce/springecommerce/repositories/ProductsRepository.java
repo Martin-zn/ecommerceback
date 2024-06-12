@@ -7,6 +7,7 @@ import com.martin.ecommerce.springecommerce.entities.Product;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductsRepository extends ListCrudRepository<Product, Long> {
 
@@ -20,5 +21,11 @@ public interface ProductsRepository extends ListCrudRepository<Product, Long> {
             "CASE WHEN :sort = 'price_high' THEN p.price END DESC")
     public List<Product> filterProducts(@Param("category") String category, @Param("minPrice") Integer minPrice,
                                         @Param("maxPrice") Integer maxPrice, @Param("sort") String sort);
+
+    @Query("SELECT p FROM Product p LEFT JOIN p.category c WHERE p.id = :productId")
+    Optional<Product> findProductById(@Param("productId") Long productId);
+
+
+
 
 }

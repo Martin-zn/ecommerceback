@@ -11,6 +11,8 @@ import com.martin.ecommerce.springecommerce.repositories.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CartService {
 
@@ -32,9 +34,10 @@ public class CartService {
     }
 
     public String addCartItem(Long userId, AddItemRequest req) throws ProductException {
-        Cart cart = cartRepository.findByUserId(userId);
-        Product product =productService.findProductById(req.getProductId());
 
+        Cart cart = cartRepository.findByUserId(userId);
+        System.out.println(req.getProductId());
+        Product product =productService.findProductById(req.getProductId());
         CartItem isPresent = cartItemService.isCartItemExist(cart,product,userId);
 
         if(isPresent==null){
@@ -60,7 +63,10 @@ public class CartService {
         int totalPrice=0;
         int totalItem=0;
 
-        for(CartItem cartItem : cart.getCartItems()){
+
+        List<CartItem> lstCartItem = cartItemService.findAllCardItemByUserId(cart, userId);
+
+        for(CartItem cartItem : lstCartItem){
             totalPrice=totalPrice+cartItem.getPrice();
             totalItem=totalItem+(cartItem.getQuantity());
         }

@@ -35,11 +35,16 @@ public class ProductService {
     }
 
     public Product findProductById(Long id) throws ProductException {
-        Optional<Product> opt = productsRepository.findById(id);
+        if (id == null) {
+            throw new ProductException("El ID del producto no puede ser nulo");
+        }
 
-        if(opt.isPresent()){
+        Optional<Product> opt = productsRepository.findProductById(id);
+
+        if (opt.isPresent()) {
             return opt.get();
         }
+
         throw new ProductException("Producto no encontrado papito.. busca bien");
     }
 
