@@ -2,11 +2,11 @@ package com.martin.ecommerce.springecommerce.api.controller.order;
 
 import java.util.List;
 
+import com.martin.ecommerce.springecommerce.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.martin.ecommerce.springecommerce.entities.LocalUser;
 import com.martin.ecommerce.springecommerce.entities.WebOrder;
@@ -19,9 +19,23 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping
     public List<WebOrder> getOrders(@AuthenticationPrincipal LocalUser user){
         return orderService.getOrders(user);
     }
+
+    @PostMapping("/add")
+    public ResponseEntity createOrder(@RequestHeader("Authorization") String jwt){
+        String newJwt = jwt.substring(7);
+        LocalUser user =userService.findUserByJwt(newJwt);
+
+        return ResponseEntity.ok(orderService.createWebOrder(user));
+
+    }
+
+
 
 }

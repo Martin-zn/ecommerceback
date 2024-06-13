@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class CartItemService {
@@ -57,17 +58,20 @@ public class CartItemService {
 
     }
 
-    public void removeCartItem(Long userId, Long cartItemId) throws CartItemException, UserException{
-        CartItem cartItem = cartItemRepository.findById(cartItemId).get();
-        LocalUser user = userService.findUserById(userId);
+    public void removeCartItem(Long userId, Long cartItemId) throws CartItemException, UserException {
+        Optional<CartItem> cartItemOptional = cartItemRepository.findById(cartItemId);
+        if (cartItemOptional.isPresent()) {
+            CartItem cartItem = cartItemOptional.get();
+            LocalUser user = userService.findUserById(userId);
 
-        if (user.getId().equals(cartItem.getUserId())){
-            cartItemRepository.deleteById(cartItemId);
+            if (user.getId().equals(cartItem.getUserId())) {
+                cartItemRepository.delete(cartItem);
+            } else {
+                throw new UserException("No puede borrar los items de otros usuarios");
+            }
+        } else {
+            throw new CartItemException("El item de carrito con ID " + cartItemId + " no existe");
         }
-        else{
-            throw new UserException("No puede borrar los items de otros usuarios");
-        }
-
     }
 
     public CartItem findCartItemById(Long cartItemId) throws CartItemException{

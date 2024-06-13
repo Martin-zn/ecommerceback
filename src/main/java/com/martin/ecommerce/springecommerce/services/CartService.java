@@ -5,13 +5,16 @@ import com.martin.ecommerce.springecommerce.entities.Cart;
 import com.martin.ecommerce.springecommerce.entities.CartItem;
 import com.martin.ecommerce.springecommerce.entities.LocalUser;
 import com.martin.ecommerce.springecommerce.entities.Product;
+import com.martin.ecommerce.springecommerce.exceptions.CartItemException;
 import com.martin.ecommerce.springecommerce.exceptions.ProductException;
+import com.martin.ecommerce.springecommerce.exceptions.UserException;
 import com.martin.ecommerce.springecommerce.repositories.CartItemRepository;
 import com.martin.ecommerce.springecommerce.repositories.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class CartService {
@@ -23,6 +26,8 @@ public class CartService {
     private ProductService productService;
     @Autowired
     private CartItemService cartItemService;
+    @Autowired
+    private UserService userService;
 
     //Metodos
 
@@ -66,6 +71,8 @@ public class CartService {
 
         List<CartItem> lstCartItem = cartItemService.findAllCardItemByUserId(cart, userId);
 
+//        cart.setCartItems(lstCartItem);
+
         for(CartItem cartItem : lstCartItem){
             totalPrice=totalPrice+cartItem.getPrice();
             totalItem=totalItem+(cartItem.getQuantity());
@@ -74,5 +81,16 @@ public class CartService {
         cart.setTotalPrice(totalPrice);
         cart.setTotalItem(totalItem);
         return cartRepository.save(cart);
+    }
+
+    public void deleteCartItem(Long userId, Long cartItemId) throws CartItemException, UserException {
+//        LocalUser user = userService.findUserById(userId);
+        CartItem cartItem = cartItemService.findCartItemById(cartItemId);
+
+        if (userId.equals(cartItem.getUserId())) {
+            cartItemService.removeCartItem(userId, cartItemId);
+        } else {
+            throw new CartItemException("No existe el cartItem");
+        }
     }
 }
