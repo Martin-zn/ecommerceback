@@ -31,6 +31,7 @@ public class WebOrder {
     private List<WebOrderQuantities> quantities = new ArrayList<>();
 
     private Integer totalPrice;
+    private Integer totalItems;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "webOrder", cascade = CascadeType.ALL, orphanRemoval = true)
     @Column(name = "order_items")

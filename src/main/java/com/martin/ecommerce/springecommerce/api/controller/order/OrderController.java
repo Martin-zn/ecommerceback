@@ -2,8 +2,10 @@ package com.martin.ecommerce.springecommerce.api.controller.order;
 
 import java.util.List;
 
+import com.martin.ecommerce.springecommerce.exceptions.OrderException;
 import com.martin.ecommerce.springecommerce.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +35,28 @@ public class OrderController {
         LocalUser user =userService.findUserByJwt(newJwt);
 
         return ResponseEntity.ok(orderService.createWebOrder(user));
+    }
 
+    @GetMapping("/user")
+    public ResponseEntity userOrderHistory(@RequestHeader("Authorization") String jwt){
+        String newJwt = jwt.substring(7);
+        LocalUser user =userService.findUserByJwt(newJwt);
+
+        List<WebOrder> orders = orderService.userOrderHistory(user.getId());
+        return new ResponseEntity<>(orders, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{orderId}/delete")
+    public ResponseEntity deleteOrder(@PathVariable Long orderId, @RequestHeader("Authorization") String jwt) throws OrderException {
+        String newJwt = jwt.substring(7);
+        LocalUser user =userService.findUserByJwt(newJwt);
+        try {
+            orderService.deleteOrder(orderId);
+            return new ResponseEntity<>("Orden eliminada exitosamente", HttpStatus.OK);
+
+        }catch (Exception e){
+            throw new OrderException("ID incorrecto");
+        }
     }
 
 

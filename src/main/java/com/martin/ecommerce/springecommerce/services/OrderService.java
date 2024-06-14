@@ -57,7 +57,7 @@ public class OrderService {
         createdOrder.setUser(user);
         createdOrder.setOrderItems(orderItems);
         createdOrder.setTotalPrice((int) cart.getTotalPrice());
-        createdOrder.setTotalPrice((int) cart.getTotalItem());
+        createdOrder.setTotalItems((int) cart.getTotalItem());
 
         WebOrder savedOrder = webOrderRepository.save(createdOrder);
 
@@ -75,7 +75,7 @@ public class OrderService {
         if (opt.isPresent()){
             return opt.get();
         }
-        throw new OrderException("La orden con el id " + orderId + ", no exxiste");
+        throw new OrderException("La orden con el id " + orderId + ", no existe");
     }
 
     public List<WebOrder> userOrderHistory(Long userId){
@@ -84,6 +84,22 @@ public class OrderService {
 
         return order;
     }
+
+    public List<WebOrder> getAllOrders(){
+        return webOrderRepository.findAll();
+    }
+
+    public void deleteOrder(Long orderId)throws OrderException{
+        Optional<WebOrder> order = webOrderRepository.findById(orderId);
+
+        if(order.isPresent()){
+            webOrderRepository.delete(order.get());
+        }
+        throw new OrderException("La orden con id " +orderId + " ,no exsiste");
+
+    }
+
+
 
 
 
