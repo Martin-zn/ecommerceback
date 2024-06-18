@@ -57,7 +57,7 @@ public class UserService{
         return userRepository.findById(id).get();
     }
 
-    public LocalUser registerUser(RegistrationBody registrationBody) throws UserAlreadyExistsException, EmailFailureException{
+    public String registerUser(RegistrationBody registrationBody) throws UserAlreadyExistsException, EmailFailureException{
 
         //primero verifico si es que el correo o el nombre de usuario esta registrado, de ser asi no podra registrarse
         if (userRepository.findByEmailIgnoreCase(registrationBody.getEmail()).isPresent() || userRepository.findByUsernameIgnoreCase(registrationBody.getUsername()).isPresent()){
@@ -85,8 +85,11 @@ public class UserService{
         VerificationToken verificationToken = createVerificationToken(user);//Creo un token de verificacion
 
         emailService.sendVerificationEmail(verificationToken);//Envio el Token via correo
-        createCart(user);
-        return userRepository.save(user);//Guardo el user
+
+        userRepository.save(user);
+        //Esto es una prueba para saltarme la verificaicon por correo, lo que estoy haciendo es que aunque no se verifique genere el token
+
+        return jwtService.generateJWT(user);//Guardo el user
 
     }
 

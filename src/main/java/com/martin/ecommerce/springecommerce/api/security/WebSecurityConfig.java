@@ -54,7 +54,7 @@ public class WebSecurityConfig {
             http.addFilter(jwtAuthenticationFilter);
             http.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
             http.authorizeHttpRequests((authz) -> authz
-                            .requestMatchers("/product","/product/**", "/auth/register", "/auth/login","/auth/verify", "/error",
+                            .requestMatchers("/product","/product/**", "/auth/register", "/auth/login","/auth/verify", "/auth/verify/**", "/error",
                                     "/auth/forgot", "/auth/reset", "/websocket", "/websocket/**", "/prueba/hello", "/login").permitAll()
                             .requestMatchers("/prueba/admin", "/prueba/admin/createProduct").hasRole("ADMIN")
                             .requestMatchers("/prueba/user").hasRole("USER")

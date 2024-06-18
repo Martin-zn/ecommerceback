@@ -34,6 +34,9 @@ public class CartController {
     public ResponseEntity findUserCart(@RequestHeader("Authorization") String jwt) throws UserException {
         String newJwt = jwt.substring(7);
         LocalUser user = userService.findUserByJwt(newJwt);
+
+        cartService.createCart(user);
+
         if(user != null){
         Cart cart = cartService.findUserCart(user.getId());
         return ResponseEntity.ok(cart);

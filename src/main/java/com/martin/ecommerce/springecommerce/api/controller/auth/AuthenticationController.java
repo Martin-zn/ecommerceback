@@ -8,11 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.martin.ecommerce.springecommerce.api.model.LoginBody;
 import com.martin.ecommerce.springecommerce.api.model.LoginResponse;
@@ -24,8 +20,6 @@ import com.martin.ecommerce.springecommerce.exceptions.UserNotVerifiedException;
 import com.martin.ecommerce.springecommerce.services.UserService;
 
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.GetMapping;
-
 
 
 @RestController
@@ -40,11 +34,22 @@ public class AuthenticationController {
 
     @SuppressWarnings("rawtypes")
     @PostMapping("/register")
+    @CrossOrigin("http://localhost:3000")
     public ResponseEntity registerUser(@Valid @RequestBody RegistrationBody registrationBody){
         try {
-            userService.registerUser(registrationBody);
+            String jwt = userService.registerUser(registrationBody);
             System.out.println("Usuario Creado");
-            return ResponseEntity.ok().build();
+
+            LoginResponse response = new LoginResponse();
+            response.setJwt(jwt);
+            response.setSuccess(true);
+
+            return ResponseEntity.ok(response);
+
+
+
+
+//            return ResponseEntity.ok().build();
         } catch (UserAlreadyExistsException e) {
             System.out.println("Problemas con la creacion del usuario");
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
@@ -55,6 +60,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
+    @CrossOrigin("http://localhost:3000")
     public ResponseEntity<LoginResponse> loginUser(@Valid @RequestBody LoginBody loginBody){
         String jwt;
         try {
@@ -84,7 +90,9 @@ public class AuthenticationController {
     }
 
     @GetMapping("/me")
+    @CrossOrigin("http://localhost:3000")
     public LocalUser getLoggedInUSerProfile(@AuthenticationPrincipal LocalUser user){
+        System.out.println(user);
         return user;
     }
 
