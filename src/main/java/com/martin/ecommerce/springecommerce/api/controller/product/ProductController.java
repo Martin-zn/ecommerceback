@@ -28,6 +28,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
+    @CrossOrigin("http://localhost:3000")
     public ResponseEntity<?> getProductById(@PathVariable Long id) throws ProductException {
 
         return ResponseEntity.ok(productService.findProductById(id));

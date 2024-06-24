@@ -31,11 +31,12 @@ public class CartController {
 
 
     @GetMapping("/")
+    @CrossOrigin("http://localhost:3000")
     public ResponseEntity findUserCart(@RequestHeader("Authorization") String jwt) throws UserException {
         String newJwt = jwt.substring(7);
         LocalUser user = userService.findUserByJwt(newJwt);
 
-        cartService.createCart(user);
+//        cartService.createCart(user);
 
         if(user != null){
         Cart cart = cartService.findUserCart(user.getId());
@@ -46,6 +47,7 @@ public class CartController {
     }
 
     @PostMapping("/add")
+    @CrossOrigin("http://localhost:3000")
     public ResponseEntity addCartItem(@RequestHeader("Authorization") String jwt, @RequestBody AddItemRequest req) {
         try {
             String newJwt = jwt.substring(7);
@@ -62,6 +64,7 @@ public class CartController {
 
 
     @PutMapping("/{cartItemId}")
+    @CrossOrigin("http://localhost:3000")
     public ResponseEntity updateCartItem(@PathVariable Long cartItemId, @RequestHeader("Authorization") String jwt, @RequestBody CartItem cartItem) throws CartItemException, UserException {
 
         String newJwt = jwt.substring(7);
@@ -72,6 +75,7 @@ public class CartController {
     }
 
     @DeleteMapping("/remove/{cartItemId}")
+    @CrossOrigin("http://localhost:3000")
     public ResponseEntity removeCartItem(
             @PathVariable Long cartItemId,
             @RequestHeader("Authorization") String jwt) throws CartItemException, UserException {

@@ -46,7 +46,8 @@ public class CartItemService {
         LocalUser user = userService.findUserById(item.getUserId());
 
         if(user.getId().equals(userId)){
-            item.setQuantity(cartItem.getPrice());
+//            item.setQuantity(cartItem.getPrice());
+            item.setQuantity(cartItem.getQuantity());
             item.setPrice(item.getProduct().getPrice()*item.getQuantity());
         }
         return cartItemRepository.save(item);

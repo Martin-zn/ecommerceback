@@ -25,11 +25,13 @@ public class OrderController {
     private UserService userService;
 
     @GetMapping
+    @CrossOrigin("http://localhost:3000")
     public List<WebOrder> getOrders(@AuthenticationPrincipal LocalUser user){
         return orderService.getOrders(user);
     }
 
     @PostMapping("/add")
+    @CrossOrigin("http://localhost:3000")
     public ResponseEntity createOrder(@RequestHeader("Authorization") String jwt){
         String newJwt = jwt.substring(7);
         LocalUser user =userService.findUserByJwt(newJwt);
@@ -38,6 +40,7 @@ public class OrderController {
     }
 
     @GetMapping("/user")
+    @CrossOrigin("http://localhost:3000")
     public ResponseEntity userOrderHistory(@RequestHeader("Authorization") String jwt){
         String newJwt = jwt.substring(7);
         LocalUser user =userService.findUserByJwt(newJwt);
@@ -47,6 +50,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/{orderId}/delete")
+    @CrossOrigin("http://localhost:3000")
     public ResponseEntity deleteOrder(@PathVariable Long orderId, @RequestHeader("Authorization") String jwt) throws OrderException {
         String newJwt = jwt.substring(7);
         LocalUser user =userService.findUserByJwt(newJwt);
@@ -58,6 +62,21 @@ public class OrderController {
             throw new OrderException("ID incorrecto");
         }
     }
+
+    @GetMapping("/{orderId}")
+    @CrossOrigin("http://localhost:3000")
+    public ResponseEntity findOrderById(@PathVariable Long orderId, @RequestHeader("Authorization") String jwt) throws OrderException {
+        String newJwt = jwt.substring(7);
+        LocalUser user =userService.findUserByJwt(newJwt);
+        try{
+            WebOrder order = orderService.findOrderById(orderId);
+            return ResponseEntity.ok(order);
+
+        }catch (Exception e){
+            throw new OrderException("ID incorrecto");
+        }
+    }
+
 
 
 
