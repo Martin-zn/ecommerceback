@@ -93,6 +93,7 @@ public class AuthenticationController {
     @CrossOrigin("http://localhost:3000")
     public LocalUser getLoggedInUSerProfile(@AuthenticationPrincipal LocalUser user){
         System.out.println(user);
+//        cartService.createCart(user);
         return user;
     }
 
